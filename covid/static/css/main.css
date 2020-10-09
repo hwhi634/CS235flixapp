@@ -1,0 +1,189 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,500,700,900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+
+
+}
+body{
+    background-color: #16171d !important;
+    color: white !important;
+}
+.icon {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: -0.5em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.movie-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.movie-item {
+  position: relative;
+  margin: 16px;
+  padding: 0;
+  width: 110px;
+  border-radius: 4px;
+  box-shadow: 0 8px 16px #1126;
+  background: #111;
+  overflow: hidden;
+}
+
+.movie-item h2 {
+  display: block;
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  right: 30%;
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-size: 16px;
+  line-height: 1.35;
+  z-index: 5;
+  font-weight: 700;
+  color: #ddf;
+  text-shadow: 0 0 4px #111;
+}
+
+.movie-item::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#like{
+width: 100px;
+float: left;
+}
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+
+
+
+.background {
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100vh;
+}
+
+.blur {
+  background: rgb(22 23 29 / 70%);
+  backdrop-filter: blur(8px);
+  height: 100vh;
+  padding-left: 3%;
+  padding-top: 1%;
+}
+.img {
+  margin-right: -15px;
+  margin-left: -15px;
+  padding-bottom: 62.5%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+#imgback{
+width: 100px;
+}
+.navbar {
+background-color: transparent !important;
+}
+a {
+color: white !important;
+}
+.simple-pagination ul {
+	margin: 0 0 20px;
+	padding: 0;
+	list-style: none;
+	text-align: center;
+}
+
+.simple-pagination li {
+	display: inline-block;
+	margin-right: 5px;
+}
+
+.simple-pagination li a,
+.simple-pagination li span {
+	color: #666;
+	padding: 5px 10px;
+    text-decoration: none;
+    border: 1px solid #282a35;
+    background-color: #282a35;
+}
+
+.simple-pagination .current {
+	color: #FFF;
+	background-color: #384c79;
+	border-color: #282a35;
+}
+
+.simple-pagination .prev.current,
+.simple-pagination .next.current {
+	background: #e04e60;
+}
+.simple-pagination .prev.current, .simple-pagination .next.current {
+    background: #384c79;
+}
+.page-link:hover{
+background-color: #384c79 !important;
+border-color: #384c79 !important;
+}
+.has-search{
+margin-left: 10%;
+margin-right: 10%;
+}
+.rightside{
+padding-top: 3%;
+}
+.dropdown-menu{
+background-color: #384c79 !important;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+    background-color: #4f6494 !important;
+    }
+.btn-primary {
+    background-color: #384c79 !important;
+    border-color: #384c79 !important;
+}
+.btn-primary:hover {
+    background-color: #4b649c !important;
+    border-color: #4b649c !important;
+}
+.mord{
+    margin-left: 10% !important;
+    margin-bottom: 1.5% !important;
+}

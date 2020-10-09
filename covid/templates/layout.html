@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+
+    <title>The COVID Pandemic of 2020</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/main.css') }}"
+    />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+	<link
+      rel="bookmark"
+	  type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+	
+	<link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+  </head>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <body>
+    <div id="body">
+
+      <div class="container-fluid">
+          <!-- Main content block to be supplied by page. -->
+          {% block content %} {% endblock %}
+
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js'></script>
+    <script>
+        var items = $(".movie-list .movie-item");
+        var numItems = items.length;
+        var perPage = Math.ceil((((window.innerWidth / 2) / 126) * window.innerHeight / 181) / 2);
+
+        $('#pagination-container').pagination({
+            items: numItems,
+            itemsOnPage: perPage,
+            prevText: "&laquo;",
+            nextText: "&raquo;",
+            displayedPages: 3,
+            edges: 1,
+            onPageClick: function(pageNumber) {
+                var showFrom = perPage * (pageNumber - 1);
+                var showTo = showFrom + perPage;
+                items.hide().slice(showFrom, showTo).show();
+            }
+        });
+
+
+        items.slice(perPage).hide();
+        $(window).resize(larg);
+
+        function larg() {
+            perPage = Math.ceil((((window.innerWidth / 2) / 126) * window.innerHeight / 181) / 2);
+            $(function() {
+                $('#pagination-container').pagination('redraw');
+            });
+        }
+
+        $(function() {
+            $('.fav').bind('click', function() {
+                $.getJSON('/_add_numbers', {
+                    a: $(this).val()
+                }, function(data) {
+                    console.log(data);
+                });
+                return false;
+            });
+        });
+
+        $('.movie-item').click(function() {
+            $.getJSON('/movie_select', {
+                id: $(this).attr('name')
+            }, function(data) {
+                console.log(data);
+            });
+        });
+
+
+
+    </script>
+  </body>
+</html>

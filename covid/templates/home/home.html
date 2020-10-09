@@ -1,0 +1,119 @@
+{% extends 'layout.html' %} {% block content %}
+	<div class="row">
+		<div class="col-md-6" style="padding-left: 0px;">
+			<div class="background" style="background-image: url(https://image.tmdb.org/t/p/w200{{random.image_hyperlink}});">
+				<div class="blur">
+					<div class="row">
+						<div class="col-md-12">
+							<nav class="navbar navbar-expand-lg">
+								<i class="fas fa-video" style="padding-right: 10px;"></i>
+							  <a class="navbar-brand fav" name="her" href="#">cs235flix</a>
+							  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+								<span class="navbar-toggler-icon"></span>
+							  </button>
+
+							  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+								<ul class="navbar-nav mr-auto">
+								  <li class="nav-item active">
+									<a class="nav-link" href="{{ url_for('home_bp.home') }}">Home</a>
+								  </li>
+								  {% if 'username' not in session %}
+								  <li class="nav-item">
+									<a class="nav-link" href="{{ url_for('authentication_bp.register') }}">Register</a>
+								  </li>
+								  <li class="nav-item">
+									<a class="nav-link" href="{{ url_for('authentication_bp.login') }}">Login</a>
+								  </li>
+								  {% endif %}
+								  {% if 'username' in session %}
+								  <li class="nav-item">
+									<a class="nav-link" href="{{ url_for('authentication_bp.logout') }}">Logout</a>
+								  </li>
+								  {% endif %}
+
+								</ul>
+							  </div>
+							</nav>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<img alt="Bootstrap Image Preview" src="https://image.tmdb.org/t/p/w400{{random.image_hyperlink}}" />
+						</div>
+						<div class="col-md-6">
+							<h2>
+								{{random.title}}
+							</h2>
+							<p>{{random.runtime}}m, {{random.rating}}/10</p>
+							<p>diredted by: person</p>
+							<p>
+								Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+							</p>
+							<p>actors: people</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<h6>Similar movies.</h6>
+							<img id="imgback" src="https://image.tmdb.org/t/p/w200/u6QBDGUCOEMRekna95ip2MxplbQ.jpg" />
+							<img id="imgback" src="https://image.tmdb.org/t/p/w200/uGj7NH3rFsUOmSBiPxsv4EBqHk5.jpg" />
+							<img id="imgback" src="https://image.tmdb.org/t/p/w200/jUx4P4Q1VsQ07rLz7sOlSyNm4F3.jpg" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="rightside">
+				<div class="row">
+					<div class="col-md-12">
+
+						<form>
+						  <div class="form-row mord">
+							<div class="col-md-6 mb-6">
+							  <input type="text" class="form-control" id="validationDefault03" required>
+							</div>
+							<div class="col-md-2 mb-2">
+							  <select class="custom-select" id="validationDefault04" required>
+								<option selected disabled value="">Year</option>
+								<option>...</option>
+							  </select>
+							</div>
+							  <div class="col-md-2 mb-2">
+							  <select class="custom-select" id="validationDefault04" required>
+								<option selected disabled value="">Genre</option>
+								{% for key in tag_urls %}
+									<option href="{{ tag_urls[key] }}">{{ key }}</option>
+								{% endfor %}
+							  </select>
+							</div>
+							  <div class="col-md-2 mb-2">
+							  <button class="btn btn-primary" type="submit">Search</button>
+							</div>
+
+						  </div>
+
+
+						</form>
+
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div id="pagination-container"></div>
+						<div class='movie-list'>
+						{% for i in selected_articles %}
+							<article class='movie-item' name="{{ i.id }}">
+							<img src='https://image.tmdb.org/t/p/w200{{ i.image_hyperlink }}'>
+							</article>
+						{% endfor %}
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %}
