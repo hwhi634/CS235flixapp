@@ -93,16 +93,14 @@ class MemoryRepository(AbstractRepository):
 
     def get_article_ids_for_tag(self, tag_name: str):
         # Linear search, to find the first occurrence of a Tag with the name tag_name.
-        tag = next((tag for tag in self._tags if tag.tag_name == tag_name), None)
+        # tag = next((tag for tag in self._tags if tag.tag_name == tag_name), None)
 
         # Retrieve the ids of articles associated with the Tag.
-        if tag is not None:
-            article_ids = [article.id for article in tag.tagged_articles]
+        if len(self._articles_index)>0:
+            return list(self._articles_index.keys())
         else:
             # No Tag with name tag_name, so return an empty list.
-            article_ids = list()
-
-        return article_ids
+            return list()
 
     def get_date_of_previous_article(self, article: Article):
         previous_date = None

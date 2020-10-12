@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
 
-    <title>The COVID Pandemic of 2020</title>
+    <title>cs25flix</title>
 
     <link
       rel="stylesheet"
@@ -40,56 +40,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js'></script>
     <script>
-        var items = $(".movie-list .movie-item");
-        var numItems = items.length;
-        var perPage = Math.ceil((((window.innerWidth / 2) / 126) * window.innerHeight / 181) / 2);
+    var pagination = -1;
 
-        $('#pagination-container').pagination({
-            items: numItems,
-            itemsOnPage: perPage,
-            prevText: "&laquo;",
-            nextText: "&raquo;",
-            displayedPages: 3,
-            edges: 1,
-            onPageClick: function(pageNumber) {
-                var showFrom = perPage * (pageNumber - 1);
-                var showTo = showFrom + perPage;
-                items.hide().slice(showFrom, showTo).show();
-            }
-        });
+    $('.movie-item').click(function() {
+        console.log("test");
+        var url = new URL(window.location.href);
+        window.location.href = "/m?id=" + $(this).attr('name') + "&page=" + (url.searchParams.get("page") ? url.searchParams.get("page") : 0);
+    });
 
-
-        items.slice(perPage).hide();
-        $(window).resize(larg);
-
-        function larg() {
-            perPage = Math.ceil((((window.innerWidth / 2) / 126) * window.innerHeight / 181) / 2);
-            $(function() {
-                $('#pagination-container').pagination('redraw');
-            });
-        }
-
-        $(function() {
-            $('.fav').bind('click', function() {
-                $.getJSON('/_add_numbers', {
-                    a: $(this).val()
-                }, function(data) {
-                    console.log(data);
-                });
-                return false;
-            });
-        });
-
-        $('.movie-item').click(function() {
-            $.getJSON('/movie_select', {
-                id: $(this).attr('name')
-            }, function(data) {
-                console.log(data);
-            });
-        });
-
-
-
-    </script>
+      </script>
   </body>
 </html>

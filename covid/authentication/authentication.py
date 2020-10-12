@@ -79,9 +79,7 @@ def login():
         title='Login',
         username_error_message=username_not_recognised,
         password_error_message=password_does_not_match_username,
-        form=form,
-        selected_articles=utilities.get_selected_articles(),
-        tag_urls=utilities.get_tags_and_urls()
+        form=form
     )
 
 
