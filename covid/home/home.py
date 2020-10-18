@@ -20,7 +20,7 @@ home_blueprint = Blueprint(
 @home_blueprint.route('/', methods=['GET'])
 def home():
     # return redirect("/m?page=0", code=302)
-    return render_template('front.html')
+    return render_template('front.html', tag_urls=utilities.get_tags_and_urls())
 
 
 @home_blueprint.route('/m', methods=['GET'])
