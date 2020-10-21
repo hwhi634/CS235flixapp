@@ -39,69 +39,49 @@
                 box-shadow: none !important;
             }
 
-            .flex-container{
-                display:-webkit-flex;
-                display:flex;
-                -webkit-flex-direction:column;
-                flex-direction:column;
-                -webkit-justify-content:center;
-                justify-content:center;
-                -webkit-align-items:center;
-                align-items:center;
-                -webkit-align-content:center;
-                align-content:center;
-                }
 
+.mb-2, .my-2 {
+    margin-bottom: 0 !important;
+}
+.container2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
         </style>
     </head>
     <body>
         <div class="background">
             <div class="blur">
-                <div class="flex-container">
-<!--                    <div class="flex-item">-->
-<!--                        <p>235<i class="fas fa-play-circle"></i>flix</p>-->
-<!--                    </div>-->
-<!--                    <form method="post" action="#" role="search">-->
-<!--                        <div class="flex-item" style="width: 70%;">-->
-<!--                            <div class="input-group">-->
-<!--                            <div class="input-group-prepend">-->
-<!--                                <span class="input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>-->
-<!--                            </div>-->
-<!--                            <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="search. . .">-->
-<!--                            <select class="custom-select" id="inputGroupSelect01">-->
-<!--                                <option selected>Genre</option>-->
-<!--                                {% for key in tag_urls %}-->
-<!--                                    <option value="{{key}}">{{key}}</option>-->
-<!--                                {% endfor %}-->
-<!--                            </select>-->
-<!--                        </div>-->
-<!--                        </div>-->
-<!--                    </form>-->
+                <div class="container2">
+
+                <p style="color:green;text-align:center;">235flix</p>
 
 
-
-
-                    <form>
+                    <form id="search">
                       <div class="form-row align-items-center">
                           <div class="col-auto my-1">
                           <div class="input-group mb-2 mr-sm-2">
                             <div class="input-group-prepend">
-                              <div class="input-group-text">@</div>
+                              <div class="input-group-text"><i class="fas fa-search"></i></div>
                             </div>
-                            <input type="text" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Username">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search">
                           </div>
                         </div>
                         <div class="col-auto my-1">
-                          <select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
-                            <option selected disabled>Genre</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                          <select class="custom-select mr-sm-2" id="genreSelect">
+                            <option selected disabled value="all">Genre</option>
+                              {% for key in tag_urls %}
+                            <option value="{{key}}">{{key}}</option>
+                              {% endfor %}
                           </select>
                         </div>
 
                         <div class="col-auto my-1">
-                          <button type="submit" class="btn btn-primary">Submit</button>
+                          <button type="submit" class="btn btn-primary">Go <i class="fas fa-arrow-right"></i></button>
                         </div>
                       </div>
                     </form>
@@ -117,14 +97,27 @@
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
         <script>
-<!--                $(function() {-->
-<!--                    var x = 0;-->
-<!--                    setInterval(function() {-->
-<!--                        x -= 0.2;-->
+                $( "#search" ).submit(function( event ) {
+                var searchData = $('#searchInput').val();
+                var locationRedirect;
+                if (searchData.length==0){
+                    locationRedirect = "/m";
+                }else{
+                    locationRedirect = "/m?s="+searchData+"&g="+$( "#genreSelect option:selected" ).val();
+                }
 
-<!--                        $('.background').css('background-position-y', x);-->
-<!--                    }, 10);-->
-<!--                })-->
+                  location.href = locationRedirect;
+                  event.preventDefault();
+                });
+
+                $(function() {
+                    var x = 0;
+                    setInterval(function() {
+                        x -= 0.2;
+
+                        $('.background').css('background-position-y', x);
+                    }, 10);
+                })
         </script>
     </body>
 </html>

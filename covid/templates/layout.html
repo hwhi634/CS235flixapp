@@ -43,9 +43,13 @@
     var pagination = -1;
 
     $('.movie-item').click(function() {
-        console.log("test");
-        var url = new URL(window.location.href);
-        window.location.href = "/m?id=" + $(this).attr('name') + "&page=" + (url.searchParams.get("page") ? url.searchParams.get("page") : 0);
+        var url = window.location.href;
+        var redirectUrl = "/m?id="+$(this).attr('name');
+        var searchParams = new URLSearchParams(url.split("?")[1]);
+<!--        window.location.href = "/m?id=" + $(this).attr('name') + "&page=" + (url.searchParams.get("page") ? url.searchParams.get("page") : 0)+ "&s=" + (url.searchParams.get("s") ? url.searchParams.get("s") : 0);-->
+        searchParams.forEach(function(value, key) {
+          console.log(key, value);
+        });
     });
 
       </script>
