@@ -69,8 +69,8 @@ def get_articles_by_date(date, repo: AbstractRepository):
     return articles_dto, prev_date, next_date
 
 
-def get_article_ids_for_tag(tag_name, repo: AbstractRepository):
-    article_ids = repo.get_article_ids_for_tag(tag_name)
+def get_article_ids_for_tag(s, tag_name, repo: AbstractRepository):
+    article_ids = repo.get_article_ids_for_tag(s, tag_name)
 
     return article_ids
 

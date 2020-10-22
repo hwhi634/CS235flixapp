@@ -25,10 +25,14 @@ def home():
 
 @home_blueprint.route('/m', methods=['GET'])
 def articles_by_tag():
-    articles_per_page = 28
+    articles_per_page = 35
 
     # Read query parameters.
-    tag_name = request.args.get('tag')
+    if 'g' not in request.args:
+        tag_name = 'all'
+    else:
+        tag_name = request.args.get('g')
+    s = request.args.get('s')
     if 'page' not in request.args:
         page = 0
     else:
@@ -50,7 +54,7 @@ def articles_by_tag():
     #     page = int(page)
 
     # Retrieve article ids for articles that are tagged with tag_name.
-    article_ids = services.get_article_ids_for_tag(tag_name, repo.repo_instance)
+    article_ids = services.get_article_ids_for_tag(s, tag_name, repo.repo_instance)
     # print(article_ids)
     # Retrieve the batch of articles to display on the Web page.
 
@@ -65,21 +69,21 @@ def articles_by_tag():
 
     if page > 0:
         # There are preceding articles, so generate URLs for the 'previous' and 'first' navigation buttons.
-        prev_article_url = url_for('home_bp.articles_by_tag', s=request.args.get('s'), tag=tag_name, page=page - 1, id=request.args.get('id'))
-        first_article_url = url_for('home_bp.articles_by_tag', s=request.args.get('s'), tag=tag_name, id=request.args.get('id'))
+        prev_article_url = url_for('home_bp.articles_by_tag', s=request.args.get('s'), g=tag_name, page=page - 1, id=request.args.get('id'))
+        first_article_url = url_for('home_bp.articles_by_tag', s=request.args.get('s'), g=tag_name, id=request.args.get('id'))
 
     if (page+1)*articles_per_page < len(article_ids):
         # There are further articles, so generate URLs for the 'next' and 'last' navigation buttons.
-        next_article_url = url_for('home_bp.articles_by_tag', s=request.args.get('s'), tag=tag_name, page=page + 1, id=request.args.get('id'))
+        next_article_url = url_for('home_bp.articles_by_tag', s=request.args.get('s'), g=tag_name, page=page + 1, id=request.args.get('id'))
 
         last_page = int(len(article_ids) / articles_per_page)
         if len(article_ids) % articles_per_page == 0:
             last_page -= articles_per_page
-        last_article_url = url_for('home_bp.articles_by_tag', s=request.args.get('s'), tag=tag_name, page=last_page, id=request.args.get('id'))
+        last_article_url = url_for('home_bp.articles_by_tag', s=request.args.get('s'), g=tag_name, page=last_page, id=request.args.get('id'))
 
     # Construct urls for viewing article comments and adding comments.
     for article in articles:
-        article['view_comment_url'] = url_for('home_bp.articles_by_tag', s=request.args.get('s'), tag=tag_name, page=page, view_comments_for=article['id'])
+        article['view_comment_url'] = url_for('home_bp.articles_by_tag', s=request.args.get('s'), g=tag_name, page=page, view_comments_for=article['id'])
         article['add_comment_url'] = url_for('home_bp.comment_on_article', article=article['id'])
 
     # print(request.args.get('page'))

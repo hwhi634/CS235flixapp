@@ -2,7 +2,7 @@ import csv
 import os
 from datetime import date, datetime
 from typing import List
-
+from fuzzywuzzy import fuzz
 from bisect import bisect, bisect_left, insort_left
 
 from werkzeug.security import generate_password_hash
@@ -91,12 +91,27 @@ class MemoryRepository(AbstractRepository):
         articles = [self._articles_index[id] for id in existing_ids]
         return articles
 
-    def get_article_ids_for_tag(self, tag_name: str):
+    def get_article_ids_for_tag(self, s: str, tag_name: str):
         # Linear search, to find the first occurrence of a Tag with the name tag_name.
         # tag = next((tag for tag in self._tags if tag.tag_name == tag_name), None)
-
+        d = []
         # Retrieve the ids of articles associated with the Tag.
-        if len(self._articles_index)>0:
+        print(tag_name)
+        if s is not None:
+            for i in self._articles:
+                if tag_name == 'all':
+                    if fuzz.partial_ratio(s, i.title) > 70:
+                        d.append(i.id)
+                else:
+                    if fuzz.partial_ratio(s, i.title)>70 and tag_name in [i.tag_name for i in list(i.tags)]:
+                        d.append(i.id)
+            return d
+        if tag_name is not 'all':
+            for i in self._articles:
+                if tag_name in [i.tag_name for i in list(i.tags)]:
+                    d.append(i.id)
+            return d
+        if len(self._articles_index) > 0:
             return list(self._articles_index.keys())
         else:
             # No Tag with name tag_name, so return an empty list.

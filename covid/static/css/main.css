@@ -35,13 +35,21 @@ img {
   position: relative;
   margin: 16px;
   padding: 0;
-  width: 110px;
+  width: 140px;
   border-radius: 4px;
   box-shadow: 0 8px 16px #1126;
   background: #111;
   overflow: hidden;
 }
-
+@media only screen and (max-width: 1920px) {
+  .movie-item {
+    width: 100px !important;
+  }
+}@media only screen and (max-width: 1280px) {
+  .movie-item {
+    width: 55px !important;
+  }
+}
 .movie-item h2 {
   display: block;
   position: absolute;
