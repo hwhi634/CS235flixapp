@@ -22,7 +22,7 @@ flask-wtf==0.14.2
 pip~=20.0.2
 zlib~=1.2.11
 wheel~=0.34.2
-openssl~=1.1.1g
+openssl~=1.1.1
 cryptography~=2.9.2
 setuptools~=46.4.0
 wtforms~=2.3.3
