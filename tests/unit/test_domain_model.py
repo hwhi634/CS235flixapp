@@ -1,13 +1,13 @@
 from datetime import date
 
-from covid.domain.model import User, Article, Tag, make_comment, make_tag_association, ModelException
+from covid.domain.model import User, Movie, Genre, make_review, make_genre_association, ModelException
 
 import pytest
 
 
 @pytest.fixture()
-def article():
-    return Article(
+def movie():
+    return Movie(
         date.fromisoformat('2020-03-15'),
         'test movie',
         'test movie fp',
@@ -28,8 +28,8 @@ def user():
 
 
 @pytest.fixture()
-def tag():
-    return Tag('Mystery')
+def genre():
+    return Genre('Mystery')
 
 
 def test_user_construction(user):
@@ -37,75 +37,75 @@ def test_user_construction(user):
     assert user.password == '1234567890'
     assert repr(user) == '<User dbowie 1234567890>'
 
-    for comment in user.comments:
-        # User should have an empty list of Comments after construction.
+    for review in user.reviews:
+        # User should have an empty list of Reviews after construction.
         assert False
 
 
-def test_article_construction(article):
-    assert article.id is None
-    assert article.date == date.fromisoformat('2020-03-15')
-    assert article.title == 'test movie'
-    assert article.first_para == 'test movie fp'
+def test_movie_construction(movie):
+    assert movie.id is None
+    assert movie.date == date.fromisoformat('2020-03-15')
+    assert movie.title == 'test movie'
+    assert movie.first_para == 'test movie fp'
 
-    assert article.number_of_comments == 0
-    assert article.number_of_tags == 0
+    assert movie.number_of_reviews == 0
+    assert movie.number_of_genres == 0
     assert repr(
-        article) == '<Article 2020-03-15 test movie>'
+        movie) == '<Movie 2020-03-15 test movie>'
 
 
-def test_article_less_than_operator():
-    article_1 = Article(
+def test_movie_less_than_operator():
+    movie_1 = Movie(
         date.fromisoformat('2020-03-15'), "None", "None", "None", "None", 0.0, "None", 0, 0, "None", []
     )
 
-    article_2 = Article(
+    movie_2 = Movie(
         date.fromisoformat('2020-04-20'), "None", "None", "None", "None", 0.0, "None", 0, 0, "None", []
     )
 
-    assert article_1 < article_2
+    assert movie_1 < movie_2
 
 
-def test_tag_construction(tag):
-    assert tag.tag_name == 'Mystery'
+def test_genre_construction(genre):
+    assert genre.genre_name == 'Mystery'
 
-    for article in tag.tagged_articles:
+    for movie in genre.genreged_movies:
         assert False
 
-    assert not tag.is_applied_to(Article(date.fromisoformat('2020-04-20'), "None", "None", "None", "None", 0.0, "None", 0, 0, "None", []))
+    assert not genre.is_applied_to(Movie(date.fromisoformat('2020-04-20'), "None", "None", "None", "None", 0.0, "None", 0, 0, "None", []))
 
 
-def test_make_comment_establishes_relationships(article, user):
-    comment_text = 'good film'
-    comment = make_comment(user, article, comment_text, 8)
+def test_make_review_establishes_relationships(movie, user):
+    review_text = 'good film'
+    review = make_review(user, movie, review_text, 8)
 
-    # Check that the User object knows about the Comment.
-    assert comment in user.comments
+    # Check that the User object knows about the Review.
+    assert review in user.reviews
 
-    # Check that the Comment knows about the User.
-    assert comment.user is user
+    # Check that the Review knows about the User.
+    assert review.user is user
 
-    # Check that Article knows about the Comment.
-    assert comment in article.comments
+    # Check that Movie knows about the Review.
+    assert review in movie.reviews
 
-    # Check that the Comment knows about the Article.
-    assert comment.article is article
-
-
-def test_make_tag_associations(article, tag):
-    make_tag_association(article, tag)
-
-    # Check that the Article knows about the Tag.
-    assert article.is_tagged()
-    assert article.is_tagged_by(tag)
-
-    # check that the Tag knows about the Article.
-    assert tag.is_applied_to(article)
-    assert article in tag.tagged_articles
+    # Check that the Review knows about the Movie.
+    assert review.movie is movie
 
 
-def test_make_tag_associations_with_article_already_tagged(article, tag):
-    make_tag_association(article, tag)
+def test_make_genre_associations(movie, genre):
+    make_genre_association(movie, genre)
+
+    # Check that the Movie knows about the Genre.
+    assert movie.is_genreged()
+    assert movie.is_genreged_by(genre)
+
+    # check that the Genre knows about the Movie.
+    assert genre.is_applied_to(movie)
+    assert movie in genre.genreged_movies
+
+
+def test_make_genre_associations_with_movie_already_genreged(movie, genre):
+    make_genre_association(movie, genre)
 
     with pytest.raises(ModelException):
-        make_tag_association(article, tag)
+        make_genre_association(movie, genre)

@@ -65,43 +65,43 @@ def test_index(client):
     assert b'Action' in response.data
 
 
-def test_login_required_to_comment(client):
-    response = client.post('/comment')
+def test_login_required_to_review(client):
+    response = client.post('/review')
     assert response.headers['Location'] == 'http://localhost/authentication/login'
 
-@pytest.mark.parametrize(('comment', 'messages'), (
-        ('Hey', (b'Your comment is too short')),
-        ('ass', (b'Your comment is too short')),
+@pytest.mark.parametrize(('review', 'messages'), (
+        ('Hey', (b'Your review is too short')),
+        ('ass', (b'Your review is too short')),
 ))
-def test_comment_with_invalid_input(client, auth, comment, messages):
+def test_review_with_invalid_input(client, auth, review, messages):
     # Login a user.
     auth.login()
 
-    # Attempt to comment on an article.
+    # Attempt to review on an movie.
     response = client.post(
-        '/comment',
-        data={'comment': comment, 'article_id': 2}
+        '/review',
+        data={'review': review, 'movie_id': 2}
     )
-    # Check that supplying invalid comment text generates appropriate error messages.
+    # Check that supplying invalid review text generates appropriate error messages.
     for message in messages:
         assert message in response.data
 
 
-def test_articles_with_comment(client):
-    # Check that we can retrieve the articles page.
+def test_movies_with_review(client):
+    # Check that we can retrieve the movies page.
     response = client.get('/m?id=1')
     assert response.status_code == 200
 
-    # Check that all comments for specified article are included on the page.
+    # Check that all reviews for specified movie are included on the page.
     assert b'good film' in response.data
     assert b'yea not bad' in response.data
 
 
-def test_articles_with_tag(client):
-    # Check that we can retrieve the articles page.
+def test_movies_with_genre(client):
+    # Check that we can retrieve the movies page.
     response = client.get('/m?g=Sci-Fi')
     assert response.status_code == 200
 
-    # Check that all articles tagged with 'Health' are included on the page.
+    # Check that all movies genreged with 'Health' are included on the page.
     assert b'https://image.tmdb.org/t/p/w200/zNlJvCY3Pz7SE09Lf4G7uPs5XFZ.jpg' in response.data
 

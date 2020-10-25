@@ -40,7 +40,7 @@ def register():
         form=form,
         username_error_message=username_not_unique,
         handler_url=url_for('authentication_bp.register'),
-        tag_urls=utilities.get_tags_and_urls()
+        genre_urls=utilities.get_genres_and_urls()
     )
 
 

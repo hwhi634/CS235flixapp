@@ -3,7 +3,7 @@ from typing import List
 
 import pytest
 
-from covid.domain.model import User, Article, Tag, Comment, make_comment
+from covid.domain.model import User, Movie, Genre, Review, make_review
 from covid.adapters.repository import RepositoryException
 
 
@@ -24,14 +24,14 @@ def test_repository_does_not_retrieve_a_non_existent_user(in_memory_repo):
     assert user is None
 
 
-def test_repository_can_retrieve_article_count(in_memory_repo):
-    number_of_articles = in_memory_repo.get_number_of_articles()
+def test_repository_can_retrieve_movie_count(in_memory_repo):
+    number_of_movies = in_memory_repo.get_number_of_movies()
 
-    assert number_of_articles == 1000
+    assert number_of_movies == 1000
 
 
-def test_repository_can_add_article(in_memory_repo):
-    article = Article(
+def test_repository_can_add_movie(in_memory_repo):
+    movie = Movie(
         date.fromisoformat('2020-03-15'),
         'test movie',
         'test movie fp',
@@ -44,102 +44,102 @@ def test_repository_can_add_article(in_memory_repo):
         "jamesbrown",
         ["ben", "dover"],
     )
-    in_memory_repo.add_article(article)
+    in_memory_repo.add_movie(movie)
 
-    assert in_memory_repo.get_article(7) is article
-
-
-def test_repository_can_retrieve_article(in_memory_repo):
-    article = in_memory_repo.get_article(1)
-
-    # Check that the Article has the expected title.
-    assert article.title == 'Guardians of the Galaxy'
-
-    assert article.is_tagged_by(Tag('Action'))
-    assert article.is_tagged_by(Tag('Adventure'))
+    assert in_memory_repo.get_movie(7) is movie
 
 
-def test_repository_can_retrieve_tags(in_memory_repo):
-    tags: List[Tag] = in_memory_repo.get_tags()
+def test_repository_can_retrieve_movie(in_memory_repo):
+    movie = in_memory_repo.get_movie(1)
 
-    assert len(tags) == 20
+    # Check that the Movie has the expected title.
+    assert movie.title == 'Guardians of the Galaxy'
+
+    assert movie.is_genreged_by(Genre('Action'))
+    assert movie.is_genreged_by(Genre('Adventure'))
 
 
-def test_repository_can_get_articles_by_ids(in_memory_repo):
-    articles = in_memory_repo.get_articles_by_id([2, 5, 6])
+def test_repository_can_retrieve_genres(in_memory_repo):
+    genres: List[Genre] = in_memory_repo.get_genres()
 
-    assert len(articles) == 3
-    assert articles[
+    assert len(genres) == 20
+
+
+def test_repository_can_get_movies_by_ids(in_memory_repo):
+    movies = in_memory_repo.get_movies_by_id([2, 5, 6])
+
+    assert len(movies) == 3
+    assert movies[
                0].title == 'Prometheus'
-    assert articles[1].title == "Suicide Squad"
-    assert articles[2].title == 'The Great Wall'
+    assert movies[1].title == "Suicide Squad"
+    assert movies[2].title == 'The Great Wall'
 
 
-def test_repository_returns_article_ids_for_existing_tag(in_memory_repo):
-    article_ids = in_memory_repo.get_article_ids_for_tag(None, 'Mystery')
+def test_repository_returns_movie_ids_for_existing_genre(in_memory_repo):
+    movie_ids = in_memory_repo.get_movie_ids_for_genre(None, 'Mystery')
 
-    assert len(article_ids)>0
-
-
-def test_repository_returns_an_empty_list_for_non_existent_tag(in_memory_repo):
-    article_ids = in_memory_repo.get_article_ids_for_tag(None, 'United States')
-
-    assert len(article_ids) == 0
+    assert len(movie_ids)>0
 
 
-def test_repository_returns_date_of_previous_article(in_memory_repo):
-    article = in_memory_repo.get_article(6)
-    previous_date = in_memory_repo.get_date_of_previous_article(article)
+def test_repository_returns_an_empty_list_for_non_existent_genre(in_memory_repo):
+    movie_ids = in_memory_repo.get_movie_ids_for_genre(None, 'United States')
+
+    assert len(movie_ids) == 0
+
+
+def test_repository_returns_date_of_previous_movie(in_memory_repo):
+    movie = in_memory_repo.get_movie(6)
+    previous_date = in_memory_repo.get_date_of_previous_movie(movie)
 
     assert previous_date.isoformat() == '2016-12-14'
 
 
-def test_repository_returns_date_of_next_article(in_memory_repo):
-    article = in_memory_repo.get_article(3)
-    next_date = in_memory_repo.get_date_of_next_article(article)
+def test_repository_returns_date_of_next_movie(in_memory_repo):
+    movie = in_memory_repo.get_movie(3)
+    next_date = in_memory_repo.get_date_of_next_movie(movie)
 
     assert next_date.isoformat() == '2017-01-11'
 
 
-def test_repository_can_add_a_tag(in_memory_repo):
-    tag = Tag('Motoring')
-    in_memory_repo.add_tag(tag)
+def test_repository_can_add_a_genre(in_memory_repo):
+    genre = Genre('Motoring')
+    in_memory_repo.add_genre(genre)
 
-    assert tag in in_memory_repo.get_tags()
+    assert genre in in_memory_repo.get_genres()
 
 
-def test_repository_can_add_a_comment(in_memory_repo):
+def test_repository_can_add_a_review(in_memory_repo):
     user = in_memory_repo.get_user('thorke')
-    article = in_memory_repo.get_article(2)
-    comment = make_comment(user, article, "good film", 8)
+    movie = in_memory_repo.get_movie(2)
+    review = make_review(user, movie, "good film", 8)
 
-    in_memory_repo.add_comment(comment)
+    in_memory_repo.add_review(review)
 
-    assert comment in in_memory_repo.get_comments()
+    assert review in in_memory_repo.get_reviews()
 
 
-def test_repository_does_not_add_a_comment_without_a_user(in_memory_repo):
-    article = in_memory_repo.get_article(2)
-    comment = Comment(None, article, "Trump's onto it!", datetime.today())
+def test_repository_does_not_add_a_review_without_a_user(in_memory_repo):
+    movie = in_memory_repo.get_movie(2)
+    review = Review(None, movie, "Trump's onto it!", datetime.today())
 
     with pytest.raises(RepositoryException):
-        in_memory_repo.add_comment(comment)
+        in_memory_repo.add_review(review)
 
 
-def test_repository_does_not_add_a_comment_without_an_article_properly_attached(in_memory_repo):
+def test_repository_does_not_add_a_review_without_an_movie_properly_attached(in_memory_repo):
     user = in_memory_repo.get_user('thorke')
-    article = in_memory_repo.get_article(2)
-    comment = Comment(None, article, "Trump's onto it!", datetime.today())
+    movie = in_memory_repo.get_movie(2)
+    review = Review(None, movie, "Trump's onto it!", datetime.today())
 
-    user.add_comment(comment)
+    user.add_review(review)
 
     with pytest.raises(RepositoryException):
-        # Exception expected because the Article doesn't refer to the Comment.
-        in_memory_repo.add_comment(comment)
+        # Exception expected because the Movie doesn't refer to the Review.
+        in_memory_repo.add_review(review)
 
 
-def test_repository_can_retrieve_comments(in_memory_repo):
-    assert len(in_memory_repo.get_comments()) == 3
+def test_repository_can_retrieve_reviews(in_memory_repo):
+    assert len(in_memory_repo.get_reviews()) == 3
 
 
 

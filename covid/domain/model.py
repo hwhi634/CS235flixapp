@@ -8,7 +8,7 @@ class User:
     ):
         self._username: str = username
         self._password: str = password
-        self._comments: List[Comment] = list()
+        self._reviews: List[Review] = list()
 
     @property
     def username(self) -> str:
@@ -19,11 +19,11 @@ class User:
         return self._password
 
     @property
-    def comments(self) -> Iterable['Comment']:
-        return iter(self._comments)
+    def reviews(self) -> Iterable['Review']:
+        return iter(self._reviews)
 
-    def add_comment(self, comment: 'Comment'):
-        self._comments.append(comment)
+    def add_review(self, review: 'Review'):
+        self._reviews.append(review)
 
     def __repr__(self) -> str:
         return f'<User {self._username} {self._password}>'
@@ -34,12 +34,12 @@ class User:
         return other._username == self._username
 
 
-class Comment:
+class Review:
     def __init__(
-            self, user: User, article: 'Article', comment: str, rating: int):
+            self, user: User, movie: 'Movie', review: str, rating: int):
         self._user: User = user
-        self._article: Article = article
-        self._comment: Comment = comment
+        self._movie: Movie = movie
+        self._review: Review = review
         self._timestamp: datetime = datetime.now()
         self._rating = rating
 
@@ -52,24 +52,24 @@ class Comment:
         return self._rating
 
     @property
-    def article(self) -> 'Article':
-        return self._article
+    def movie(self) -> 'Movie':
+        return self._movie
 
     @property
-    def comment(self) -> str:
-        return self._comment
+    def review(self) -> str:
+        return self._review
 
     @property
     def timestamp(self) -> datetime:
         return self._timestamp
 
     def __eq__(self, other):
-        if not isinstance(other, Comment):
+        if not isinstance(other, Review):
             return False
-        return other._user == self._user and other._article == self._article and other._comment == self._comment and other._timestamp == self._timestamp
+        return other._user == self._user and other._movie == self._movie and other._review == self._review and other._timestamp == self._timestamp
 
 
-class Article:
+class Movie:
     def __init__(self, date: date, title: str, first_para: str, hyperlink: str, image_hyperlink: str, rating: float, back_hyperlink:str, id:int, runtime: int, director:str, actors:list):
         self._id: int = id
         self._date: date = date
@@ -77,8 +77,8 @@ class Article:
         self._first_para: str = first_para
         self._hyperlink: str = hyperlink
         self._image_hyperlink: str = image_hyperlink
-        self._comments: List[Comment] = list()
-        self._tags: List[Tag] = list()
+        self._reviews: List[Review] = list()
+        self._genres: List[Genre] = list()
         self._rating: float = rating
         self._back_hyperlink: str = back_hyperlink
         self._runtime: int = runtime
@@ -130,38 +130,38 @@ class Article:
         return self._image_hyperlink
 
     @property
-    def comments(self) -> Iterable[Comment]:
-        return iter(self._comments)
+    def reviews(self) -> Iterable[Review]:
+        return iter(self._reviews)
 
     @property
-    def number_of_comments(self) -> int:
-        return len(self._comments)
+    def number_of_reviews(self) -> int:
+        return len(self._reviews)
 
     @property
-    def number_of_tags(self) -> int:
-        return len(self._tags)
+    def number_of_genres(self) -> int:
+        return len(self._genres)
 
     @property
-    def tags(self) -> Iterable['Tag']:
-        return iter(self._tags)
+    def genres(self) -> Iterable['Genre']:
+        return iter(self._genres)
 
-    def is_tagged_by(self, tag: 'Tag'):
-        return tag in self._tags
+    def is_genreged_by(self, genre: 'Genre'):
+        return genre in self._genres
 
-    def is_tagged(self) -> bool:
-        return len(self._tags) > 0
+    def is_genreged(self) -> bool:
+        return len(self._genres) > 0
 
-    def add_comment(self, comment: Comment):
-        self._comments.append(comment)
+    def add_review(self, review: Review):
+        self._reviews.append(review)
 
-    def add_tag(self, tag: 'Tag'):
-        self._tags.append(tag)
+    def add_genre(self, genre: 'Genre'):
+        self._genres.append(genre)
 
     def __repr__(self):
-        return f'<Article {self._date.isoformat()} {self._title}>'
+        return f'<Movie {self._date.isoformat()} {self._title}>'
 
     def __eq__(self, other):
-        if not isinstance(other, Article):
+        if not isinstance(other, Movie):
             return False
         return (
                 other._date == self._date and
@@ -175,52 +175,52 @@ class Article:
         return self._date < other._date
 
 
-class Tag:
+class Genre:
     def __init__(
-            self, tag_name: str
+            self, genre_name: str
     ):
-        self._tag_name: str = tag_name
-        self._tagged_articles: List[Article] = list()
+        self._genre_name: str = genre_name
+        self._genreged_movies: List[Movie] = list()
 
     @property
-    def tag_name(self) -> str:
-        return self._tag_name
+    def genre_name(self) -> str:
+        return self._genre_name
 
     @property
-    def tagged_articles(self) -> Iterable[Article]:
-        return iter(self._tagged_articles)
+    def genreged_movies(self) -> Iterable[Movie]:
+        return iter(self._genreged_movies)
 
     @property
-    def number_of_tagged_articles(self) -> int:
-        return len(self._tagged_articles)
+    def number_of_genreged_movies(self) -> int:
+        return len(self._genreged_movies)
 
-    def is_applied_to(self, article: Article) -> bool:
-        return article in self._tagged_articles
+    def is_applied_to(self, movie: Movie) -> bool:
+        return movie in self._genreged_movies
 
-    def add_article(self, article: Article):
-        self._tagged_articles.append(article)
+    def add_movie(self, movie: Movie):
+        self._genreged_movies.append(movie)
 
     def __eq__(self, other):
-        if not isinstance(other, Tag):
+        if not isinstance(other, Genre):
             return False
-        return other._tag_name == self._tag_name
+        return other._genre_name == self._genre_name
 
 
 class ModelException(Exception):
     pass
 
 
-def make_comment(user, article, comment_text, rating):
-    comment = Comment(user, article, comment_text, rating)
-    user.add_comment(comment)
-    article.add_comment(comment)
+def make_review(user, movie, review_text, rating):
+    review = Review(user, movie, review_text, rating)
+    user.add_review(review)
+    movie.add_review(review)
 
-    return comment
+    return review
 
 
-def make_tag_association(article: Article, tag: Tag):
-    if tag.is_applied_to(article):
-        raise ModelException(f'Tag {tag.tag_name} already applied to Article "{article.title}"')
+def make_genre_association(movie: Movie, genre: Genre):
+    if genre.is_applied_to(movie):
+        raise ModelException(f'Genre {genre.genre_name} already applied to Movie "{movie.title}"')
 
-    article.add_tag(tag)
-    tag.add_article(article)
+    movie.add_genre(genre)
+    genre.add_movie(movie)

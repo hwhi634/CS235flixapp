@@ -5,7 +5,7 @@ import pytest
 from covid.authentication.services import AuthenticationException
 from covid.home import services as home_services
 from covid.authentication import services as auth_services
-from covid.news.services import NonExistentArticleException
+from covid.news.services import NonExistentMovieException
 
 
 def test_can_add_user(in_memory_repo):
@@ -51,86 +51,86 @@ def test_authentication_with_invalid_credentials(in_memory_repo):
         auth_services.authenticate_user(new_username, '0987654321', in_memory_repo)
 
 
-def test_can_add_comment(in_memory_repo):
-    article_id = 3
-    comment_text = 'The loonies are stripping the supermarkets bare!'
+def test_can_add_review(in_memory_repo):
+    movie_id = 3
+    review_text = 'The loonies are stripping the supermarkets bare!'
     username = 'fmercury'
 
-    # Call the service layer to add the comment.
-    home_services.add_comment(article_id, comment_text, username, 8, in_memory_repo)
+    # Call the service layer to add the review.
+    home_services.add_review(movie_id, review_text, username, 8, in_memory_repo)
 
-    # Retrieve the comments for the article from the repository.
-    comments_as_dict = home_services.get_comments_for_article(article_id, in_memory_repo)
+    # Retrieve the reviews for the movie from the repository.
+    reviews_as_dict = home_services.get_reviews_for_movie(movie_id, in_memory_repo)
 
-    # Check that the comments include a comment with the new comment text.
+    # Check that the reviews include a review with the new review text.
     assert next(
-        (dictionary['comment_text'] for dictionary in comments_as_dict if dictionary['comment_text'] == comment_text),
+        (dictionary['review_text'] for dictionary in reviews_as_dict if dictionary['review_text'] == review_text),
         None) is not None
 
 
-def test_cannot_add_comment_for_non_existent_article(in_memory_repo):
-    article_id = 9999
-    comment_text = "good movie not see"
+def test_cannot_add_review_for_non_existent_movie(in_memory_repo):
+    movie_id = 9999
+    review_text = "good movie not see"
     username = 'rottentomatoes'
 
-    # Call the service layer to attempt to add the comment.
-    with pytest.raises(home_services.NonExistentArticleException):
-        home_services.add_comment(article_id, comment_text, username, 8, in_memory_repo)
+    # Call the service layer to attempt to add the review.
+    with pytest.raises(home_services.NonExistentMovieException):
+        home_services.add_review(movie_id, review_text, username, 8, in_memory_repo)
 
 
-def test_cannot_add_comment_by_unknown_user(in_memory_repo):
-    article_id = 3
-    comment_text = 'bad movie do not see'
+def test_cannot_add_review_by_unknown_user(in_memory_repo):
+    movie_id = 3
+    review_text = 'bad movie do not see'
     username = 'doaldtrump'
 
-    # Call the service layer to attempt to add the comment.
+    # Call the service layer to attempt to add the review.
     with pytest.raises(home_services.UnknownUserException):
-        home_services.add_comment(article_id, comment_text, username, 8, in_memory_repo)
+        home_services.add_review(movie_id, review_text, username, 8, in_memory_repo)
 
 
-def test_can_get_article(in_memory_repo):
+def test_can_get_movie(in_memory_repo):
 
-    article_as_dict = home_services.get_article(2, in_memory_repo)
+    movie_as_dict = home_services.get_movie(2, in_memory_repo)
 
-    assert article_as_dict['id'] == 2
-    assert len(article_as_dict['comments']) == 0
+    assert movie_as_dict['id'] == 2
+    assert len(movie_as_dict['reviews']) == 0
 
-    tag_names = [dictionary['name'] for dictionary in article_as_dict['tags']]
-    assert 'Adventure' in tag_names
-
-
-def test_cannot_get_article_with_non_existent_id(in_memory_repo):
-    article_id = 999999
-
-    # Call the service layer to attempt to retrieve the Article.
-    with pytest.raises(home_services.NonExistentArticleException):
-        home_services.get_article(article_id, in_memory_repo)
-
-def test_get_articles_by_id(in_memory_repo):
-    target_article_ids = [5, 6, 7, 8]
-    articles_as_dict = home_services.get_articles_by_id(target_article_ids, in_memory_repo)
-
-    # Check that 2 articles were returned from the query.
-    assert len(articles_as_dict) == 4
-
-    # Check that the article ids returned were 5 and 6.
-    article_ids = [article['id'] for article in articles_as_dict]
-    assert set([5, 6]).issubset(article_ids)
+    genre_names = [dictionary['name'] for dictionary in movie_as_dict['genres']]
+    assert 'Adventure' in genre_names
 
 
-def test_get_comments_for_article(in_memory_repo):
-    comments_as_dict = home_services.get_comments_for_article(1, in_memory_repo)
+def test_cannot_get_movie_with_non_existent_id(in_memory_repo):
+    movie_id = 999999
 
-    # Check that 2 comments were returned for article with id 1.
-    assert len(comments_as_dict) == 3
+    # Call the service layer to attempt to retrieve the Movie.
+    with pytest.raises(home_services.NonExistentMovieException):
+        home_services.get_movie(movie_id, in_memory_repo)
 
-    # Check that the comments relate to the article whose id is 1.
-    article_ids = [comment['article_id'] for comment in comments_as_dict]
-    article_ids = set(article_ids)
-    assert 1 in article_ids and len(article_ids) == 1
+def test_get_movies_by_id(in_memory_repo):
+    target_movie_ids = [5, 6, 7, 8]
+    movies_as_dict = home_services.get_movies_by_id(target_movie_ids, in_memory_repo)
+
+    # Check that 2 movies were returned from the query.
+    assert len(movies_as_dict) == 4
+
+    # Check that the movie ids returned were 5 and 6.
+    movie_ids = [movie['id'] for movie in movies_as_dict]
+    assert set([5, 6]).issubset(movie_ids)
 
 
-def test_get_comments_for_article_without_comments(in_memory_repo):
-    comments_as_dict = home_services.get_comments_for_article(2, in_memory_repo)
-    assert len(comments_as_dict) == 0
+def test_get_reviews_for_movie(in_memory_repo):
+    reviews_as_dict = home_services.get_reviews_for_movie(1, in_memory_repo)
+
+    # Check that 2 reviews were returned for movie with id 1.
+    assert len(reviews_as_dict) == 3
+
+    # Check that the reviews relate to the movie whose id is 1.
+    movie_ids = [review['movie_id'] for review in reviews_as_dict]
+    movie_ids = set(movie_ids)
+    assert 1 in movie_ids and len(movie_ids) == 1
+
+
+def test_get_reviews_for_movie_without_reviews(in_memory_repo):
+    reviews_as_dict = home_services.get_reviews_for_movie(2, in_memory_repo)
+    assert len(reviews_as_dict) == 0
 

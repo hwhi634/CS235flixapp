@@ -77,24 +77,24 @@
 							<h6>Similar movies.</h6>
 							<div class="similar justify-content-around" style="display: flex;">
 							{% for i in similar %}
-							<article class='choose' name="{{ i.id }}">
+							<movie class='choose' name="{{ i.id }}">
 								<img id="imgback" src="{{ url_for('static', filename='p.png') }}" ref-src="https://image.tmdb.org/t/p/w92/{{i.image_hyperlink}}" />
-							</article>
+							</movie>
 							{% endfor %}
 							</div>
 						</div>
 					</div>
 					<br />
-					<button class="btn btn-dark" onclick="location.href='{{ selected.add_comment_url }}'">Review</button>
+					<button class="btn btn-dark" onclick="location.href='{{ selected.add_review_url }}'">Review</button>
 					<div class="row">
 						<div class="col-md-12">
 							<div class='movie-list'>
-							{% for i in selected.comments %}
+							{% for i in selected.reviews %}
 
 							<div class="card text-white bg-dark mb-12 w-50">
 							  <div class="card-body">
 								<h5 class="card-title">{{i.username}} {{i.rating}}</h5>
-								<p class="card-text">{{i.comment_text}}</p>
+								<p class="card-text">{{i.review_text}}</p>
 							  </div>
 							</div>
 							{% endfor %}
@@ -121,7 +121,7 @@
                         <div class="col-auto my-1">
                           <select class="custom-select mr-sm-2" id="genreSelect">
                             <option selected disabled value="all">Genre</option>
-                              {% for key in tag_urls %}
+                              {% for key in genre_urls %}
                             <option value="{{key}}">{{key}}</option>
                               {% endfor %}
                           </select>
@@ -134,25 +134,25 @@
                     </form>
 						<div class="row">
 							<div class="col-md-6">
-								{% if first_article_url is not none %}
-									<button type="button" class="btn btn-secondary pag" onclick="location.href='{{first_article_url}}'"><i class="fas fa-angle-double-left"></i></button>
+								{% if first_movie_url is not none %}
+									<button type="button" class="btn btn-secondary pag" onclick="location.href='{{first_movie_url}}'"><i class="fas fa-angle-double-left"></i></button>
 								{% else %}
 									<button type="button" class="btn btn-secondary pag" disabled><i class="fas fa-angle-double-left"></i></button>
 								{% endif %}
-								{% if prev_article_url is not none %}
-									<button type="button" class="btn btn-primary pag" onclick="location.href='{{prev_article_url}}'"><i class="fas fa-angle-left"></i></button>
+								{% if prev_movie_url is not none %}
+									<button type="button" class="btn btn-primary pag" onclick="location.href='{{prev_movie_url}}'"><i class="fas fa-angle-left"></i></button>
 								{% else %}
 									<button type="button" class="btn btn-secondary pag" disabled><i class="fas fa-angle-left"></i></button>
 								{% endif %}
 							</div>
 							<div class="col-md-6">
-								{% if last_article_url is not none %}
-									<button type="button" class="btn btn-secondary pag" onclick="location.href='{{last_article_url}}'" style="float: right;"><i class="fas fa-angle-double-right"></i></button>
+								{% if last_movie_url is not none %}
+									<button type="button" class="btn btn-secondary pag" onclick="location.href='{{last_movie_url}}'" style="float: right;"><i class="fas fa-angle-double-right"></i></button>
 								{% else %}
 									<button type="button" class="btn btn-secondary pag" style="float: right;" disabled><i class="fas fa-angle-double-right"></i></button>
 								{% endif %}
-								{% if next_article_url is not none %}
-								<button type="button" class="btn btn-primary pag" onclick="location.href='{{next_article_url}}'" style="float: right;"><i class="fas fa-angle-right"></i></button>
+								{% if next_movie_url is not none %}
+								<button type="button" class="btn btn-primary pag" onclick="location.href='{{next_movie_url}}'" style="float: right;"><i class="fas fa-angle-right"></i></button>
 								{% else %}
 									<button type="button" class="btn btn-secondary pag" style="float: right;" disabled><i class="fas fa-angle-right"></i></button>
 								{% endif %}
@@ -163,10 +163,10 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class='movie-list'>
-						{% for i in articles %}
-							<article class='movie-item choose' name="{{ i.id }}">
+						{% for i in movies %}
+							<movie class='movie-item choose' name="{{ i.id }}">
 							<img src="{{ url_for('static', filename='p.png') }}" ref-src='https://image.tmdb.org/t/p/w200{{ i.image_hyperlink }}'>
-							</article>
+							</movie>
 						{% endfor %}
 						</div>
 

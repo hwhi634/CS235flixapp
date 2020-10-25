@@ -1,10 +1,10 @@
 from typing import List, Iterable
 
 from covid.adapters.repository import AbstractRepository
-from covid.domain.model import make_comment, Article, Comment, Tag
+from covid.domain.model import make_review, Movie, Review, Genre
 
 
-class NonExistentArticleException(Exception):
+class NonExistentMovieException(Exception):
     pass
 
 
@@ -12,140 +12,140 @@ class UnknownUserException(Exception):
     pass
 
 
-def add_comment(article_id: int, comment_text: str, username: str, repo: AbstractRepository):
-    # Check that the article exists.
-    article = repo.get_article(article_id)
-    if article is None:
-        raise NonExistentArticleException
+def add_review(movie_id: int, review_text: str, username: str, repo: AbstractRepository):
+    # Check that the movie exists.
+    movie = repo.get_movie(movie_id)
+    if movie is None:
+        raise NonExistentMovieException
 
     user = repo.get_user(username)
     if user is None:
         raise UnknownUserException
 
-    # Create comment.
-    comment = make_comment(comment_text, user, article)
+    # Create review.
+    review = make_review(review_text, user, movie)
 
     # Update the repository.
-    repo.add_comment(comment)
+    repo.add_review(review)
 
 
-def get_article(article_id: int, repo: AbstractRepository):
-    article = repo.get_article(article_id)
+def get_movie(movie_id: int, repo: AbstractRepository):
+    movie = repo.get_movie(movie_id)
 
-    if article is None:
-        raise NonExistentArticleException
+    if movie is None:
+        raise NonExistentMovieException
 
-    return article_to_dict(article)
-
-
-def get_first_article(repo: AbstractRepository):
-
-    article = repo.get_first_article()
-
-    return article_to_dict(article)
+    return movie_to_dict(movie)
 
 
-def get_last_article(repo: AbstractRepository):
+def get_first_movie(repo: AbstractRepository):
 
-    article = repo.get_last_article()
-    return article_to_dict(article)
+    movie = repo.get_first_movie()
+
+    return movie_to_dict(movie)
 
 
-def get_articles_by_date(date, repo: AbstractRepository):
-    # Returns articles for the target date (empty if no matches), the date of the previous article (might be null), the date of the next article (might be null)
+def get_last_movie(repo: AbstractRepository):
 
-    articles = repo.get_articles_by_date(target_date=date)
+    movie = repo.get_last_movie()
+    return movie_to_dict(movie)
 
-    articles_dto = list()
+
+def get_movies_by_date(date, repo: AbstractRepository):
+    # Returns movies for the target date (empty if no matches), the date of the previous movie (might be null), the date of the next movie (might be null)
+
+    movies = repo.get_movies_by_date(target_date=date)
+
+    movies_dto = list()
     prev_date = next_date = None
 
-    if len(articles) > 0:
-        prev_date = repo.get_date_of_previous_article(articles[0])
-        next_date = repo.get_date_of_next_article(articles[0])
+    if len(movies) > 0:
+        prev_date = repo.get_date_of_previous_movie(movies[0])
+        next_date = repo.get_date_of_next_movie(movies[0])
 
-        # Convert Articles to dictionary form.
-        articles_dto = articles_to_dict(articles)
+        # Convert Movies to dictionary form.
+        movies_dto = movies_to_dict(movies)
 
-    return articles_dto, prev_date, next_date
-
-
-def get_article_ids_for_tag(tag_name, repo: AbstractRepository):
-    article_ids = repo.get_article_ids_for_tag(tag_name)
-
-    return article_ids
+    return movies_dto, prev_date, next_date
 
 
-def get_articles_by_id(id_list, repo: AbstractRepository):
-    articles = repo.get_articles_by_id(id_list)
+def get_movie_ids_for_genre(genre_name, repo: AbstractRepository):
+    movie_ids = repo.get_movie_ids_for_genre(genre_name)
 
-    # Convert Articles to dictionary form.
-    articles_as_dict = articles_to_dict(articles)
-
-    return articles_as_dict
+    return movie_ids
 
 
-def get_comments_for_article(article_id, repo: AbstractRepository):
-    article = repo.get_article(article_id)
+def get_movies_by_id(id_list, repo: AbstractRepository):
+    movies = repo.get_movies_by_id(id_list)
 
-    if article is None:
-        raise NonExistentArticleException
+    # Convert Movies to dictionary form.
+    movies_as_dict = movies_to_dict(movies)
 
-    return comments_to_dict(article.comments)
+    return movies_as_dict
+
+
+def get_reviews_for_movie(movie_id, repo: AbstractRepository):
+    movie = repo.get_movie(movie_id)
+
+    if movie is None:
+        raise NonExistentMovieException
+
+    return reviews_to_dict(movie.reviews)
 
 
 # ============================================
 # Functions to convert model entities to dicts
 # ============================================
 
-def article_to_dict(article: Article):
-    article_dict = {
-        'id': article.id,
-        'date': article.date,
-        'title': article.title,
-        'first_para': article.first_para,
-        'hyperlink': article.hyperlink,
-        'image_hyperlink': article.image_hyperlink,
-        'comments': comments_to_dict(article.comments),
-        'tags': tags_to_dict(article.tags)
+def movie_to_dict(movie: Movie):
+    movie_dict = {
+        'id': movie.id,
+        'date': movie.date,
+        'title': movie.title,
+        'first_para': movie.first_para,
+        'hyperlink': movie.hyperlink,
+        'image_hyperlink': movie.image_hyperlink,
+        'reviews': reviews_to_dict(movie.reviews),
+        'genres': genres_to_dict(movie.genres)
     }
-    return article_dict
+    return movie_dict
 
 
-def articles_to_dict(articles: Iterable[Article]):
-    return [article_to_dict(article) for article in articles]
+def movies_to_dict(movies: Iterable[Movie]):
+    return [movie_to_dict(movie) for movie in movies]
 
 
-def comment_to_dict(comment: Comment):
-    comment_dict = {
-        'username': comment.user.username,
-        'article_id': comment.article.id,
-        'comment_text': comment.comment,
-        'timestamp': comment.timestamp
+def review_to_dict(review: Review):
+    review_dict = {
+        'username': review.user.username,
+        'movie_id': review.movie.id,
+        'review_text': review.review,
+        'timestamp': review.timestamp
     }
-    return comment_dict
+    return review_dict
 
 
-def comments_to_dict(comments: Iterable[Comment]):
-    return [comment_to_dict(comment) for comment in comments]
+def reviews_to_dict(reviews: Iterable[Review]):
+    return [review_to_dict(review) for review in reviews]
 
 
-def tag_to_dict(tag: Tag):
-    tag_dict = {
-        'name': tag.tag_name
-        # 'tagged_articles': [article.id for article in tag.tagged_articles]
+def genre_to_dict(genre: Genre):
+    genre_dict = {
+        'name': genre.genre_name
+        # 'genreged_movies': [movie.id for movie in genre.genreged_movies]
     }
-    return tag_dict
+    return genre_dict
 
 
-def tags_to_dict(tags: Iterable[Tag]):
-    return [tag_to_dict(tag) for tag in tags]
+def genres_to_dict(genres: Iterable[Genre]):
+    return [genre_to_dict(genre) for genre in genres]
 
 
 # ============================================
 # Functions to convert dicts to model entities
 # ============================================
 
-def dict_to_article(dict):
-    article = Article(dict.id, dict.date, dict.title, dict.first_para, dict.hyperlink)
-    # Note there's no comments or tags.
-    return article
+def dict_to_movie(dict):
+    movie = Movie(dict.id, dict.date, dict.title, dict.first_para, dict.hyperlink)
+    # Note there's no reviews or genres.
+    return movie

@@ -5,60 +5,60 @@ import urllib.parse
 from datetime import date, datetime
 
 from covid.adapters.repository import AbstractRepository
-from covid.domain.model import Article
+from covid.domain.model import Movie
 
 
 def get_movie(rank, repo: AbstractRepository):
     movie = repo.get_movie(rank)
     print(movie)
-    return article_to_dict(movie)
+    return movie_to_dict(movie)
 
 
-def get_tag_names(repo: AbstractRepository):
-    tags = repo.get_tags()
-    tag_names = [tag.tag_name for tag in tags]
+def get_genre_names(repo: AbstractRepository):
+    genres = repo.get_genres()
+    genre_names = [genre.genre_name for genre in genres]
 
-    return tag_names
+    return genre_names
 
 
 def get_years(repo: AbstractRepository):
-    tags = repo.get_tags()
-    tag_names = [tag.tag_name for tag in tags]
+    genres = repo.get_genres()
+    genre_names = [genre.genre_name for genre in genres]
 
-    return tag_names
+    return genre_names
 
 
-def get_random_articles(quantity, repo: AbstractRepository):
-    article_count = repo.get_number_of_articles()
+def get_random_movies(quantity, repo: AbstractRepository):
+    movie_count = repo.get_number_of_movies()
 
-    if quantity >= article_count:
-        # Reduce the quantity of ids to generate if the repository has an insufficient number of articles.
-        quantity = article_count - 1
+    if quantity >= movie_count:
+        # Reduce the quantity of ids to generate if the repository has an insufficient number of movies.
+        quantity = movie_count - 1
 
-    # Pick distinct and random articles.
-    random_ids = range(1, article_count)
-    articles = repo.get_articles_by_id(random_ids)
+    # Pick distinct and random movies.
+    random_ids = range(1, movie_count)
+    movies = repo.get_movies_by_id(random_ids)
 
-    return articles_to_dict(articles)
+    return movies_to_dict(movies)
 
 
 # ============================================
 # Functions to convert dicts to model entities
 # ============================================
 
-def article_to_dict(article: Article):
-    article_dict = {
-        'date': article.date,
-        'title': article.title,
-        'image_hyperlink': article.image_hyperlink,
-        'back_hyperlink': article.back_hyperlink,
-        'fp': article.first_para,
-        'id': article.id,
-        'runtime': article.runtime,
-        'rating': article.rating
+def movie_to_dict(movie: Movie):
+    movie_dict = {
+        'date': movie.date,
+        'title': movie.title,
+        'image_hyperlink': movie.image_hyperlink,
+        'back_hyperlink': movie.back_hyperlink,
+        'fp': movie.first_para,
+        'id': movie.id,
+        'runtime': movie.runtime,
+        'rating': movie.rating
     }
-    return article_dict
+    return movie_dict
 
 
-def articles_to_dict(articles: Iterable[Article]):
-    return [article_to_dict(article) for article in articles]
+def movies_to_dict(movies: Iterable[Movie]):
+    return [movie_to_dict(movie) for movie in movies]
