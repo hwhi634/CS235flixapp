@@ -9,10 +9,16 @@ import pytest
 def article():
     return Article(
         date.fromisoformat('2020-03-15'),
-        'Coronavirus travel restrictions: Self-isolation deadline pushed back to give airlines breathing room',
-        'The self-isolation deadline has been pushed back',
-        'https://www.nzherald.co.nz/business/news/article.cfm?c_id=3&objectid=12316800',
-        'https://th.bing.com/th/id/OIP.0lCxLKfDnOyswQCF9rcv7AHaCz?w=344&h=132&c=7&o=5&pid=1.7'
+        'test movie',
+        'test movie fp',
+        'nan',
+        'imglink',
+        7.6,
+        "imagelink",
+        None,
+        101,
+        "jamesbrown",
+        ["ben", "dover"],
     )
 
 
@@ -23,7 +29,7 @@ def user():
 
 @pytest.fixture()
 def tag():
-    return Tag('New Zealand')
+    return Tag('Mystery')
 
 
 def test_user_construction(user):
@@ -39,42 +45,39 @@ def test_user_construction(user):
 def test_article_construction(article):
     assert article.id is None
     assert article.date == date.fromisoformat('2020-03-15')
-    assert article.title == 'Coronavirus travel restrictions: Self-isolation deadline pushed back to give airlines breathing room'
-    assert article.first_para == 'The self-isolation deadline has been pushed back'
-    assert article.hyperlink == 'https://www.nzherald.co.nz/business/news/article.cfm?c_id=3&objectid=12316800'
-    assert article.image_hyperlink == 'https://th.bing.com/th/id/OIP.0lCxLKfDnOyswQCF9rcv7AHaCz?w=344&h=132&c=7&o=5&pid=1.7'
+    assert article.title == 'test movie'
+    assert article.first_para == 'test movie fp'
 
     assert article.number_of_comments == 0
     assert article.number_of_tags == 0
-
     assert repr(
-        article) == '<Article 2020-03-15 Coronavirus travel restrictions: Self-isolation deadline pushed back to give airlines breathing room>'
+        article) == '<Article 2020-03-15 test movie>'
 
 
 def test_article_less_than_operator():
     article_1 = Article(
-        date.fromisoformat('2020-03-15'), None, None, None, None
+        date.fromisoformat('2020-03-15'), "None", "None", "None", "None", 0.0, "None", 0, 0, "None", []
     )
 
     article_2 = Article(
-        date.fromisoformat('2020-04-20'), None, None, None, None
+        date.fromisoformat('2020-04-20'), "None", "None", "None", "None", 0.0, "None", 0, 0, "None", []
     )
 
     assert article_1 < article_2
 
 
 def test_tag_construction(tag):
-    assert tag.tag_name == 'New Zealand'
+    assert tag.tag_name == 'Mystery'
 
     for article in tag.tagged_articles:
         assert False
 
-    assert not tag.is_applied_to(Article(None, None, None, None, None, None))
+    assert not tag.is_applied_to(Article(date.fromisoformat('2020-04-20'), "None", "None", "None", "None", 0.0, "None", 0, 0, "None", []))
 
 
 def test_make_comment_establishes_relationships(article, user):
-    comment_text = 'COVID-19 in the USA!'
-    comment = make_comment(comment_text, user, article)
+    comment_text = 'good film'
+    comment = make_comment(user, article, comment_text, 8)
 
     # Check that the User object knows about the Comment.
     assert comment in user.comments

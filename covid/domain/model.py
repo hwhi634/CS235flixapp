@@ -36,16 +36,20 @@ class User:
 
 class Comment:
     def __init__(
-            self, user: User, article: 'Article', comment: str, timestamp: datetime
-    ):
+            self, user: User, article: 'Article', comment: str, rating: int):
         self._user: User = user
         self._article: Article = article
         self._comment: Comment = comment
-        self._timestamp: datetime = timestamp
+        self._timestamp: datetime = datetime.now()
+        self._rating = rating
 
     @property
     def user(self) -> User:
         return self._user
+
+    @property
+    def rating(self) -> int:
+        return self._rating
 
     @property
     def article(self) -> 'Article':
@@ -66,7 +70,7 @@ class Comment:
 
 
 class Article:
-    def __init__(self, date: date, title: str, first_para: str, hyperlink: str, image_hyperlink: str, rating: float=0.0, back_hyperlink:str = None, id: int = None, runtime: int=0):
+    def __init__(self, date: date, title: str, first_para: str, hyperlink: str, image_hyperlink: str, rating: float, back_hyperlink:str, id:int, runtime: int, director:str, actors:list):
         self._id: int = id
         self._date: date = date
         self._title: str = title
@@ -78,10 +82,20 @@ class Article:
         self._rating: float = rating
         self._back_hyperlink: str = back_hyperlink
         self._runtime: int = runtime
+        self._director: str = director
+        self._actors: list = actors
 
     @property
     def id(self) -> int:
         return self._id
+
+    @property
+    def director(self) -> str:
+        return self._director
+
+    @property
+    def actors(self) -> list:
+        return self._actors
 
     @property
     def rating(self) -> float:
@@ -196,8 +210,8 @@ class ModelException(Exception):
     pass
 
 
-def make_comment(comment_text: str, user: User, article: Article, timestamp: datetime = datetime.today()):
-    comment = Comment(user, article, comment_text, timestamp)
+def make_comment(user, article, comment_text, rating):
+    comment = Comment(user, article, comment_text, rating)
     user.add_comment(comment)
     article.add_comment(comment)
 

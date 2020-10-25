@@ -106,7 +106,7 @@ class MemoryRepository(AbstractRepository):
                     if fuzz.partial_ratio(s, i.title)>70 and tag_name in [i.tag_name for i in list(i.tags)]:
                         d.append(i.id)
             return d
-        if tag_name is not 'all':
+        if tag_name != 'all':
             for i in self._articles:
                 if tag_name in [i.tag_name for i in list(i.tags)]:
                     d.append(i.id)
@@ -209,7 +209,9 @@ def load_articles_and_tags(data_path: str, repo: MemoryRepository):
             id=article_key,
             rating=data_row[8],
             back_hyperlink=data_row[13],
-            runtime=int(data_row[7])
+            runtime=int(data_row[7]),
+            director=data_row[4],
+            actors=data_row[5].split(",")
         )
 
         # Add the Article to the repository.
@@ -243,7 +245,7 @@ def load_comments(data_path: str, repo: MemoryRepository, users):
             comment_text=data_row[3],
             user=users[data_row[1]],
             article=repo.get_article(int(data_row[2])),
-            timestamp=datetime.fromisoformat(data_row[4])
+            rating=int(data_row[5])
         )
         repo.add_comment(comment)
 
@@ -256,4 +258,5 @@ def populate(data_path: str, repo: MemoryRepository):
     users = load_users(data_path, repo)
 
     # Load comments into the repository.
+    print(os.path.join(data_path, 'comments.csv'))
     load_comments(data_path, repo, users)

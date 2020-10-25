@@ -3,7 +3,7 @@ import random
 import json
 
 from flask_wtf import FlaskForm
-from wtforms import TextAreaField, HiddenField, SubmitField
+from wtforms import TextAreaField, HiddenField, SubmitField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Length
 
 import covid.adapters.repository as repo
@@ -85,15 +85,14 @@ def articles_by_tag():
     for article in articles:
         article['view_comment_url'] = url_for('home_bp.articles_by_tag', s=request.args.get('s'), g=tag_name, page=page, view_comments_for=article['id'])
         article['add_comment_url'] = url_for('home_bp.comment_on_article', article=article['id'])
-
-    # print(request.args.get('page'))
-    # print(next_article_url)
-    sa = utilities.get_selected_articles(1000)
+    t = random.randint(1, 1000)
     if 'id' not in request.args:
-        choice = random.choice(sa)
+        choice = services.get_article_by_id([random.randint(1, 1000)], repo.repo_instance)
     else:
         choice = services.get_article_by_id([int(request.args.get('id'))], repo.repo_instance)
-        choice = choice[0]
+        t=int(request.args.get('id'))
+    choice['add_comment_url'] = url_for('home_bp.comment_on_article', article=t)
+    similar=like(choice, services.get_article_by_id_similar([i for i in range(1000)],repo.repo_instance), 3)
     return render_template(
         'home/home.html',
         tag_urls=utilities.get_tags_and_urls(),
@@ -105,17 +104,9 @@ def articles_by_tag():
         last_article_url=last_article_url,
         prev_article_url=prev_article_url,
         next_article_url=next_article_url,
+        similar=random.choices(similar, k = 6),
         show_comments_for_article=article_to_show_comments
     )
-    # Generate the webpage to display the articles.
-    # return jsonify(genre=tag_name,
-    #     articles=articles,
-    #     tag_urls=utilities.get_tags_and_urls(),
-    #     first_article_url=first_article_url,
-    #     last_article_url=last_article_url,
-    #     prev_article_url=prev_article_url,
-    #     next_article_url=next_article_url,
-    #     show_comments_for_article=article_to_show_comments)
 
 
 
@@ -136,14 +127,14 @@ def comment_on_article():
         article_id = int(form.article_id.data)
 
         # Use the service layer to store the new comment.
-        services.add_comment(article_id, form.comment.data, username, repo.repo_instance)
+        services.add_comment(article_id, form.comment.data, username, form.rating.data, repo.repo_instance)
 
         # Retrieve the article in dict form.
         article = services.get_article(article_id, repo.repo_instance)
 
         # Cause the web browser to display the page of all articles that have the same date as the commented article,
         # and display all comments, including the new comment.
-        return redirect(url_for('home_bp.articles_by_date', date=article['date'], view_comments_for=article_id))
+        return redirect("/m?id="+str(article_id))
 
     if request.method == 'GET':
         # Request is a HTTP GET to display the form.
@@ -161,19 +152,34 @@ def comment_on_article():
     # the user to enter a comment. The generated Web page includes a form object.
     article = services.get_article(article_id, repo.repo_instance)
     return render_template(
-        'news/comment_on_article.html',
+        'home/comment_on_article.html',
         title='Edit article',
         article=article,
         form=form,
         handler_url=url_for('home_bp.comment_on_article'),
-        selected_articles=utilities.get_selected_articles(),
         tag_urls=utilities.get_tags_and_urls()
     )
+
+
+def like(c, l, q):
+    d = []
+    for i in l:
+        if i not in d and c["id"] != i["id"]:
+            for f in [v['name'] for v in c["tags"]]:
+                if f in [e['name'] for e in i["tags"]]:
+                    if c["director"] == i["director"]:
+                        d.insert(0, i)
+                        break
+                    else:
+                        d.append(i)
+                        break
+    return d if len(d) > 0 else []
 
 
 class CommentForm(FlaskForm):
     comment = TextAreaField('Comment', [
         DataRequired(),
         Length(min=4, message='Your comment is too short')])
+    rating = SelectField('Rating', [DataRequired()], choices=[(i, i) for i in range(1,11)])
     article_id = HiddenField("Article id")
     submit = SubmitField('Submit')

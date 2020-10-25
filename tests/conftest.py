@@ -6,10 +6,7 @@ from covid.adapters import memory_repository
 from covid.adapters.memory_repository import MemoryRepository
 
 
-TEST_DATA_PATH = os.path.join('C:', os.sep, 'Users', 'ianwo', 'OneDrive', 'Documents', 'PythonDev', 'repo 02.07.2020',
-                              'COVID-19', 'tests', 'data')
-#TEST_DATA_PATH = os.path.join('C:', os.sep, 'Users', 'iwar006', 'Documents', 'Python dev', 'COVID-19', 'tests', 'data')
-
+# TEST_DATA_PATH = r"C:\Users\admin\Desktop\uni\235\a2\CS235FLIX\COMPSCI-235-04_COVID_web_app\covid\adapters\data"
 
 @pytest.fixture
 def in_memory_repo():

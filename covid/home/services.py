@@ -2,7 +2,7 @@ from typing import List, Iterable
 
 from covid.adapters.repository import AbstractRepository
 from covid.domain.model import make_comment, Article, Comment, Tag
-
+from datetime import date, datetime
 
 class NonExistentArticleException(Exception):
     pass
@@ -12,7 +12,7 @@ class UnknownUserException(Exception):
     pass
 
 
-def add_comment(article_id: int, comment_text: str, username: str, repo: AbstractRepository):
+def add_comment(article_id: int, comment_text: str, username: str, rating, repo: AbstractRepository):
     # Check that the article exists.
     article = repo.get_article(article_id)
     if article is None:
@@ -23,7 +23,8 @@ def add_comment(article_id: int, comment_text: str, username: str, repo: Abstrac
         raise UnknownUserException
 
     # Create comment.
-    comment = make_comment(comment_text, user, article)
+    print(article)
+    comment = make_comment(user, article, comment_text, rating)
 
     # Update the repository.
     repo.add_comment(comment)
@@ -86,11 +87,13 @@ def get_articles_by_id(id_list, repo: AbstractRepository):
 def get_article_by_id(id_list, repo: AbstractRepository):
     articles = repo.get_articles_by_id(id_list)
 
-    # Convert Articles to dictionary form.
-    articles_as_dict = articles_to_dict(articles)
+    return article_to_dict(articles[0])
 
-    return articles_as_dict
 
+def get_article_by_id_similar(id_list, repo: AbstractRepository):
+    articles = repo.get_articles_by_id(id_list)
+
+    return [article_to_dict_sim(article) for article in articles]
 
 def get_comments_for_article(article_id, repo: AbstractRepository):
     article = repo.get_article(article_id)
@@ -114,16 +117,31 @@ def moviepage_to_dict(article: Article):
 
 
 def article_to_dict(article: Article):
+    print(article)
     article_dict = {
         'id': article.id,
-        'date': article.date,
+        'date': article.date.year,
         'title': article.title,
         'first_para': article.first_para,
         'image_hyperlink': article.image_hyperlink,
+        'back_hyperlink': article.back_hyperlink,
         'comments': comments_to_dict(article.comments),
         'tags': tags_to_dict(article.tags),
         'runtime': article.runtime,
-        'rating': article.rating
+        'rating': article.rating,
+        'director': article.director,
+        'actors': article.actors
+    }
+    return article_dict
+
+
+def article_to_dict_sim(article: Article):
+    article_dict = {
+        'id': article.id,
+        'title': article.title,
+        'tags': tags_to_dict(article.tags),
+        'director': article.director,
+        'image_hyperlink': article.image_hyperlink
     }
     return article_dict
 
@@ -137,7 +155,8 @@ def comment_to_dict(comment: Comment):
         'username': comment.user.username,
         'article_id': comment.article.id,
         'comment_text': comment.comment,
-        'timestamp': comment.timestamp
+        'timestamp': comment.timestamp,
+        'rating': comment.rating
     }
     return comment_dict
 
